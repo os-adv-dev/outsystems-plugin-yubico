@@ -1,0 +1,25 @@
+{
+  "name": "outsystems-plugin-yubico",
+  "version": "1.0.0",
+  "description": "Yubico SDK (Android & iOS) integration for OutSystems Apps",
+  "cordova": {
+    "id": "outsystems-plugin-yubico",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andregrillo/outsystems-plugin-yubico.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Andre Grillo - OutSystems",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andregrillo/outsystems-plugin-yubico/issues"
+  },
+  "homepage": "https://github.com/andregrillo/outsystems-plugin-yubico#readme"
+}

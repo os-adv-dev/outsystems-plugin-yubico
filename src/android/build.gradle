@@ -1,0 +1,2 @@
+implementation 'com.yubico.yubikit:android:2.0.0'
+implementation 'com.yubico.yubikit:yubiotp:2.0.0'

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="outsystems-plugin-yubico" version="1.0.0"
+	xmlns="http://apache.org/cordova/ns/plugins/1.0"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>outsystems-plugin-yubico</name>
+	<js-module name="outsystems-plugin-yubico" src="www/outsystems-plugin-yubico.js">
+		<clobbers target="cordova.plugins.yubico" />
+	</js-module>
+	<platform name="ios">
+		<podspec>
+	      <pods use-frameworks="true">
+	        <pod name="YubiKit" spec="~> 4.2.0" />
+	      </pods>
+	    </podspec>
+
+		<config-file parent="/*" target="config.xml">
+			<feature name="outsystems-plugin-yubico">
+				<param name="ios-package" value="outsystems-plugin-yubico" />
+			</feature>
+		</config-file>
+		<source-file src="src/ios/outsystems-plugin-yubico.m" />
+	</platform>
+	<platform name="android">
+		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+		<config-file parent="/*" target="res/xml/config.xml">
+			<feature name="yubico">
+				<param name="android-package" value="com.outsystems.yubico" />
+			</feature>
+		</config-file>
+		<config-file parent="/*" target="AndroidManifest.xml"></config-file>
+		<source-file src="src/android/yubico.java" target-dir="src/com/outsystems" />
+	</platform>
+</plugin>
