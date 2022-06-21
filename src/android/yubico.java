@@ -1,11 +1,13 @@
 package com.outsystems;
 
+import android.app.Activity;
+import android.content.Intent;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import com.yubico.yubikit.android.YubiKitManager;
-import com.yubico.yubikit.android.transport.usb.UsbConfiguration;
+import com.yubico.yubikit.android.ui.OtpActivity;
 import com.yubico.yubikit.core.application.CommandException;
 import com.yubico.yubikit.management.DeviceInfo;
 import com.yubico.yubikit.management.ManagementSession;
@@ -13,11 +15,18 @@ import com.yubico.yubikit.android.transport.nfc.NfcConfiguration;
 import com.yubico.yubikit.android.transport.nfc.NfcNotAvailable;
 import java.io.IOException;
 
-
 public class yubico extends CordovaPlugin {
+
+    CallbackContext callbackContext;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        this.callbackContext = callbackContext;
+
+        if (action.equals("getOTP")) {
+            this.getOTP(callbackContext);
+            return true;
+        }
         if (action.equals("startNFCDiscovery")) {
             this.startNFCDiscovery(callbackContext);
             return true;
@@ -34,6 +43,7 @@ public class yubico extends CordovaPlugin {
 
         try {
             yubiKitManager.startNfcDiscovery(new NfcConfiguration(), cordova.getActivity(), device -> {
+
                 // A YubiKey was brought within NFC range
                 ManagementSession.create(device, result -> {
                     try {
@@ -51,8 +61,6 @@ public class yubico extends CordovaPlugin {
                         callbackContext.error("Error #001: Could not read YubiKey Serial Number.");
                     }
                 });
-
-
             });
         } catch ( NfcNotAvailable e) {
             if (e.isDisabled()) {
@@ -69,4 +77,16 @@ public class yubico extends CordovaPlugin {
         callbackContext.success("NFC Discovery stopped");
     }
 
+    public void getOTP(CallbackContext callbackContext){
+        int requestCode = 1;
+        cordova.startActivityForResult(this, new Intent(cordova.getContext(), OtpActivity.class), 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK) {
+            String otp = data.getStringExtra("otp");
+            this.callbackContext.success(otp);
+        }
+    }
 }
