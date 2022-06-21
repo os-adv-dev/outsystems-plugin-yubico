@@ -1,5 +1,9 @@
 var exec = require('cordova/exec');
 
-exports.coolMethod = function (arg0, success, error) {
-    exec(success, error, 'outsystems-plugin-yubico', 'coolMethod', [arg0]);
+exports.StartNFCDiscovery = function (success, error) {
+    exec(success, error, 'yubico', 'startNFCDiscovery');
+};
+
+exports.StopNFCDiscovery = function (success, error) {
+    exec(success, error, 'yubico', 'stopNFCDiscovery');
 };

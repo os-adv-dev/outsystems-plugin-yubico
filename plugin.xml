@@ -6,20 +6,7 @@
 	<js-module name="outsystems-plugin-yubico" src="www/outsystems-plugin-yubico.js">
 		<clobbers target="cordova.plugins.yubico" />
 	</js-module>
-	<platform name="ios">
-		<podspec>
-	      <pods use-frameworks="true">
-	        <pod name="YubiKit" spec="~> 4.2.0" />
-	      </pods>
-	    </podspec>
 
-		<config-file parent="/*" target="config.xml">
-			<feature name="outsystems-plugin-yubico">
-				<param name="ios-package" value="outsystems-plugin-yubico" />
-			</feature>
-		</config-file>
-		<source-file src="src/ios/outsystems-plugin-yubico.m" />
-	</platform>
 	<platform name="android">
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
 		<config-file parent="/*" target="res/xml/config.xml">
