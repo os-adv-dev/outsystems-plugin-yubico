@@ -78,7 +78,6 @@ public class yubico extends CordovaPlugin {
     }
 
     public void getOTP(CallbackContext callbackContext){
-        int requestCode = 1;
         cordova.startActivityForResult(this, new Intent(cordova.getContext(), OtpActivity.class), 0);
     }
 
@@ -87,6 +86,8 @@ public class yubico extends CordovaPlugin {
         if(resultCode == Activity.RESULT_OK) {
             String otp = data.getStringExtra("otp");
             this.callbackContext.success(otp);
+        } else {
+            callbackContext.error("Error #004: Could not read OTP.");
         }
     }
 }
