@@ -14,7 +14,16 @@
 				<param name="android-package" value="com.outsystems.yubico" />
 			</feature>
 		</config-file>
+
+		<config-file target="res/xml/config.xml" parent="/*">
+			<preference name="GradlePluginKotlinVersion" value="1.6.0" />
+			<preference name="GradlePluginKotlinEnabled" value="true" />
+            <preference name="GradlePluginKotlinCodeStyle" value="official" />
+            <preference name="AndroidXEnabled" value="true"/>
+        </config-file>
+
 		<config-file parent="/*" target="AndroidManifest.xml"></config-file>
-		<source-file src="src/android/yubico.java" target-dir="src/com/outsystems" />
+
+		<source-file src="src/android/yubico.kt" target-dir="app/src/main/kotlin/com/outsystems/" />
 	</platform>
 </plugin>
