@@ -1,4 +1,4 @@
 dependencies {
-	implementation 'com.yubico.yubikit:android:2.0.0'
-	implementation 'com.yubico.yubikit:management:2.0.0'
+	implementation 'com.yubico.yubikit:android:2.7.0'
+	implementation 'com.yubico.yubikit:management:2.7.0'
 }
