@@ -42,7 +42,6 @@ class yubico : CordovaPlugin() {
 
     private fun startNFCDiscovery(callbackContext: CallbackContext) {
         val yubiKitManager = YubiKitManager(cordova.context)
-
         if (isNfcEnabled()) {
             try {
                 yubiKitManager.startNfcDiscovery(NfcConfiguration(), cordova.activity) { device ->
@@ -53,24 +52,21 @@ class yubico : CordovaPlugin() {
                             val serialNumber = info.serialNumber
                             if (serialNumber != null) {
                                 callbackContext.success(serialNumber)
-                            } else {
-                                callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
                             }
-
                         } catch (e: IOException) {
-                            callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                            callbackContext.error("Error #001: Could not read YubiKey Serial Number. ${e.message}")
                         } catch (e: CommandException) {
-                            callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                            callbackContext.error("Error #001: Could not read YubiKey Serial Number. ${e.message}")
                         } catch (e: Exception) {
-                            callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                            callbackContext.error("Error #001: Could not read YubiKey Serial Number. ${e.message}")
                         }
                     }
                 }
             } catch (e: NfcNotAvailable) {
                 if (e.isDisabled) {
-                    callbackContext.error("Error #002: Android NFC is turned off.")
+                    callbackContext.error("Error #002: Android NFC is turned off. ${e.message}")
                 } else {
-                    callbackContext.error("Error #003: This device is not supported.")
+                    callbackContext.error("Error #003: This device is not supported. ${e.message}")
                 }
             }
         } else {
