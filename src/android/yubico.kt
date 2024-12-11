@@ -2,6 +2,7 @@ package com.outsystems
 
 import android.app.Activity
 import android.content.Intent
+import android.nfc.NfcAdapter
 import org.apache.cordova.CordovaPlugin
 import org.apache.cordova.CallbackContext
 import org.json.JSONArray
@@ -9,7 +10,6 @@ import org.json.JSONException
 import com.yubico.yubikit.android.YubiKitManager
 import com.yubico.yubikit.android.ui.OtpActivity
 import com.yubico.yubikit.core.application.CommandException
-import com.yubico.yubikit.management.DeviceInfo
 import com.yubico.yubikit.management.ManagementSession
 import com.yubico.yubikit.android.transport.nfc.NfcConfiguration
 import com.yubico.yubikit.android.transport.nfc.NfcNotAvailable
@@ -43,35 +43,44 @@ class yubico : CordovaPlugin() {
     private fun startNFCDiscovery(callbackContext: CallbackContext) {
         val yubiKitManager = YubiKitManager(cordova.context)
 
-        try {
-            yubiKitManager.startNfcDiscovery(NfcConfiguration(), cordova.activity) { device ->
-                ManagementSession.create(device) { result ->
-                    try {
-                        val management = result.value
-                        val info = management.deviceInfo
-                        val serialNumber = info.serialNumber
-                        if(serialNumber != null) {
-                            callbackContext.success(serialNumber)
-                        } else {
+        if (isNfcEnabled()) {
+            try {
+                yubiKitManager.startNfcDiscovery(NfcConfiguration(), cordova.activity) { device ->
+                    ManagementSession.create(device) { result ->
+                        try {
+                            val management = result.value
+                            val info = management.deviceInfo
+                            val serialNumber = info.serialNumber
+                            if (serialNumber != null) {
+                                callbackContext.success(serialNumber)
+                            } else {
+                                callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                            }
+
+                        } catch (e: IOException) {
+                            callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                        } catch (e: CommandException) {
+                            callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
+                        } catch (e: Exception) {
                             callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
                         }
-                        
-                    } catch (e: IOException) {
-                        callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
-                    } catch (e: CommandException) {
-                        callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
-                    } catch (e: Exception) {
-                        callbackContext.error("Error #001: Could not read YubiKey Serial Number.")
                     }
                 }
+            } catch (e: NfcNotAvailable) {
+                if (e.isDisabled) {
+                    callbackContext.error("Error #002: Android NFC is turned off.")
+                } else {
+                    callbackContext.error("Error #003: This device is not supported.")
+                }
             }
-        } catch (e: NfcNotAvailable) {
-            if (e.isDisabled) {
-                callbackContext.error("Error #002: Android NFC is turned off.")
-            } else {
-                callbackContext.error("Error #003: This device is not supported.")
-            }
+        } else {
+            callbackContext.error("Error #002: Android NFC is turned off or unavailable.")
         }
+    }
+
+    private fun isNfcEnabled(): Boolean {
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(cordova.context)
+        return nfcAdapter != null && nfcAdapter.isEnabled
     }
 
     private fun stopNFCDiscovery(callbackContext: CallbackContext) {
